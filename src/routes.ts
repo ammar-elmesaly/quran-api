@@ -1,10 +1,10 @@
 import express from 'express';
 import userRouter from './routes/user';
-import verseRouter from './routes/verse';
+import quranRouter from './routes/quran';
 
 const router = express.Router();
 
 router.use('/users', userRouter);
-router.use('/verse', verseRouter);
+router.use('/quran', quranRouter);
 
 export default router;

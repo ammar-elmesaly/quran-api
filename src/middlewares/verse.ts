@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express';
+import { GetVerseParams } from "../types/params";
 
-export const validateVerseQuery: RequestHandler = (req, res, next): void => {
-  const { surah, verse } = req.query;
+export const validateVerseParams: RequestHandler<GetVerseParams> = (req, res, next): void => {
+  const { surah, verse } = req.params;
 
   if (typeof surah !== 'string' || typeof verse !== 'string') {
-    res.status(400).json({ error: 'Missing or invalid query params' });
+    res.status(400).json({ error: 'Missing or invalid params' });
     return;
   }
 
