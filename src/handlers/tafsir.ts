@@ -5,7 +5,7 @@ import { GetTafsirParams } from "../types/params";
 export const getAllTafsirs: RequestHandler = async (req, res) => {
   const tafsirs = await tafsirService.getAllTafsirs();
   const tafsirsJson = await tafsirs.json();
-  res.status(200).send(tafsirsJson);
+  res.status(200).json(tafsirsJson);
 }
 
 export const getVerseTafsir: RequestHandler<GetTafsirParams> = async (req, res) => {
@@ -17,5 +17,5 @@ export const getVerseTafsir: RequestHandler<GetTafsirParams> = async (req, res) 
 
   const verseTafsirJson = await verseTafsir.json();
 
-  res.status(200).send(verseTafsirJson);
+  res.status(200).json(verseTafsirJson);
 }

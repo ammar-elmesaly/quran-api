@@ -1,13 +1,44 @@
 import { RequestHandler } from "express";
+import * as userService from '../services/user';
+import { UserBody } from "../types/body";
+import { verifyPassword } from "../services/hash";
+import { User } from "../types/models/user";
 
-export const getUsers: RequestHandler = (req, res) => {
-  res.status(200).send([{
-    'name': 'Ammar',
-    'age': 19,
-    
-    }, {
-      'name': 'Abdelfattah',
-      'age': 72
-    }
-  ]);
+export const getUsers: RequestHandler = async (req, res) => {
+  const users = await userService.getUsers();
+  res.status(200).json(users);
 }
+
+export const loginUser: RequestHandler = async (req, res) => {
+  const { username, password } = req.body;
+
+  const user: User = await userService.findUser(username);
+
+  if (!user) {
+    res.status(400).json({ message: 'Invalid credentials' });
+    return;
+  }
+
+  const isPasswordValid = await verifyPassword(password, user.password_hash);
+
+  if (!isPasswordValid) {
+    res.status(400).json({ message: 'Invalid credentials' });
+    return;
+  }
+
+  const token = userService.genToken(username);
+
+  res.json({ token });
+}
+
+export const registerUser: RequestHandler<any, any, UserBody> = async (req, res) => {
+
+  const user: UserBody = {
+    username: req.body.username,
+    password: req.body.password
+  };
+
+  const userStatus = await userService.registerUser(user);
+
+  res.status(201).json({ message: 'User registered successfully!', userStatus });
+};

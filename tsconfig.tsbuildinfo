@@ -1,1 +1,1 @@
-{"root":["./src/app.ts","./src/routes.ts","./src/handlers/user.ts","./src/routes/user.ts"],"version":"5.9.2"}
+{"root":["./src/app.ts","./src/routes.ts","./src/handlers/tafsir.ts","./src/handlers/user.ts","./src/handlers/verse.ts","./src/middlewares/auth.ts","./src/middlewares/tafsir.ts","./src/middlewares/verse.ts","./src/routes/quran.ts","./src/routes/user.ts","./src/services/hash.ts","./src/services/tafsir.ts","./src/services/user.ts","./src/services/verse.ts","./src/types/params.ts","./src/types/quran.ts","./src/types/user.ts"],"version":"5.9.2"}
