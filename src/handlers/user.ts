@@ -28,7 +28,20 @@ export const loginUser: RequestHandler = async (req, res) => {
 
   const token = userService.genToken(username);
 
-  res.json({ token });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict"
+  });
+
+  res.status(200).json({
+    message: "Login successful",
+    user: {
+      id: user.id,
+      username: user.username,
+      created_at: user.created_at
+    }
+  });
 }
 
 export const registerUser: RequestHandler<any, any, UserBody> = async (req, res) => {
