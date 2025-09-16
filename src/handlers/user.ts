@@ -3,6 +3,7 @@ import * as userService from '../services/user';
 import { UserBody } from "../types/body";
 import { verifyPassword } from "../services/hash";
 import { User } from "../types/models/user";
+import { RegisterRequestHandler } from "../types/requestHandlers";
 
 export const getUsers: RequestHandler = async (req, res) => {
   const users = await userService.getUsers();
@@ -26,7 +27,7 @@ export const loginUser: RequestHandler = async (req, res) => {
     return;
   }
 
-  const token = userService.genToken(username);
+  const token = userService.genToken(username, user.id);
 
   res.cookie("token", token, {
     httpOnly: true,
@@ -44,14 +45,14 @@ export const loginUser: RequestHandler = async (req, res) => {
   });
 }
 
-export const registerUser: RequestHandler<any, any, UserBody> = async (req, res) => {
+export const registerUser: RegisterRequestHandler = async (req, res) => {
 
   const user: UserBody = {
     username: req.body.username,
     password: req.body.password
   };
 
-  const userStatus = await userService.registerUser(user);
+  await userService.registerUser(user);
 
-  res.status(201).json({ message: 'User registered successfully!', userStatus });
+  res.status(201).json({ message: 'User registered successfully!' });
 };

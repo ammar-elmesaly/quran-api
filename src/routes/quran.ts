@@ -1,10 +1,10 @@
 import express from "express";
 
-import { getVerse } from "../handlers/verse";
-import { getVerseTafsir } from "../handlers/tafsir";
-import { getAllTafsirs } from "../handlers/tafsir";
+import { getVerse, saveVerse, getSaved } from "../handlers/verse";
+import { getVerseTafsir, getAllTafsirs } from "../handlers/tafsir";
 import { validateVerseParams } from "../middlewares/verse";
 import { validateTafsirParams } from "../middlewares/tafsir";
+import { verifyToken } from "../middlewares/auth";
 
 const router = express.Router();
 
@@ -16,5 +16,11 @@ router.get('/:surah/:verse/tafsir/:tafsir', validateTafsirParams, getVerseTafsir
 
 // GET /quran/tafsir
 router.get('/tafsir', getAllTafsirs);
+
+// POST /quran/:surah/:verse/save
+router.post('/:surah/:verse/save', verifyToken, validateVerseParams, saveVerse);
+
+// GET /quran/saved
+router.get('/saved', verifyToken, getSaved);
 
 export default router;

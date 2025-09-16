@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
-import { RequestHandler } from 'express';
 import { EnvironmentError } from '../types/errors';
+import { AuthRequestHandler } from '../types/requestHandlers';
+import { User } from '../types/models/user';
 
 // Middleware to protect routes
-export const verifyToken: RequestHandler = (req, res, next) => {
+export const verifyToken: AuthRequestHandler = (req, res, next) => {
 
   if (!process.env.JWT_SECRET) throw new EnvironmentError("No JWT Secret Provided!");
   const JWT_SECRET = process.env.JWT_SECRET as string;
@@ -18,9 +19,10 @@ export const verifyToken: RequestHandler = (req, res, next) => {
 
   try {
     const verified = jwt.verify(token, JWT_SECRET);
-    (req as any).user = verified;
+    res.locals.user = verified as User;
     next();
   } catch (err) {
     res.status(400).json({ message: "Invalid Token" });
+    return;
   }
 };

@@ -25,9 +25,9 @@ export const registerUser = async (user: UserBody) => {
   );
 }
 
-export const genToken = (username: string) => {
+export const genToken = (username: string, id: number) => {
   if (!process.env.JWT_SECRET) throw new EnvironmentError("No JWT Secret Provided!");
 
-  const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ username, id }, process.env.JWT_SECRET, { expiresIn: '1h' });
   return token;
 }
