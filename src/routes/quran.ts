@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getVerse, saveVerse, getSaved } from "../handlers/verse";
+import { getVerse, saveVerse, getSaved, deleteSaved } from "../handlers/verse";
 import { getVerseTafsir, getAllTafsirs } from "../handlers/tafsir";
 import { validateVerseParams } from "../middlewares/verse";
 import { validateTafsirParams } from "../middlewares/tafsir";
@@ -22,5 +22,8 @@ router.post('/:surah/:verse/save', verifyToken, validateVerseParams, saveVerse);
 
 // GET /quran/saved
 router.get('/saved', verifyToken, getSaved);
+
+// DELETE /quran/:verse_id/delete
+router.delete('/:verse_id/delete', verifyToken, deleteSaved);
 
 export default router;

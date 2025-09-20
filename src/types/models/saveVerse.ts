@@ -5,5 +5,6 @@ export interface saveVerse {
   surah_name: string,
   verse_number: number,
   text: string,
+  note?: string,
   created_at: string
 }

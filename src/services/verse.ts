@@ -4,12 +4,15 @@ export const getVerse = (surahNumber: number, verseNumber: number) => {
   return fetch(`http://api.quran-tafseer.com/quran/${surahNumber}/${verseNumber}`);
 }
 
-export const saveVerse = async (surahNumber: number, verseNumber: number, userId: number) => {
+export const saveVerse = async (surahNumber: number, verseNumber: number, userId: number, note?: string) => {
   const verse = await getVerse(surahNumber, verseNumber);
   const verseJson = await verse.json();
+  
+  if (note === '') note = undefined;
+
   return pool.query(
-    'INSERT INTO "SaveVerse" (user_id, surah_index, surah_name, verse_number, text) VALUES ($1, $2, $3, $4, $5)',
-    [userId, verseJson.sura_index, verseJson.sura_name, verseJson.ayah_number, verseJson.text]
+    'INSERT INTO "SaveVerse" (user_id, surah_index, surah_name, verse_number, text, note) VALUES ($1, $2, $3, $4, $5, $6)',
+    [userId, verseJson.sura_index, verseJson.sura_name, verseJson.ayah_number, verseJson.text, note]
   );
 }
 
@@ -20,4 +23,13 @@ export const getSaved = async (userId: number) => {
   );
 
   return saved.rows;
+}
+
+export const deleteSaved = async (verseId: number, userId: number) => {
+  const result = await pool.query(
+    'DELETE FROM "SaveVerse" WHERE id = $1 AND user_id = $2',
+    [verseId, userId]
+  )
+
+  return result;
 }
