@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 
 import allRoutes from './routes';
 
-const PORT: string = process.env.PORT || "5000";
+const PORT: string = process.env.PORT || "3000";
 const app = express();
 
 app.use(bodyParser.json());

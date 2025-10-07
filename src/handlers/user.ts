@@ -16,14 +16,14 @@ export const loginUser: RequestHandler = async (req, res) => {
   const user: User = await userService.findUser(username);
 
   if (!user) {
-    res.status(400).json({ message: 'Invalid credentials' });
+    res.status(401).json({ message: 'Invalid credentials' });
     return;
   }
 
   const isPasswordValid = await verifyPassword(password, user.password_hash);
 
   if (!isPasswordValid) {
-    res.status(400).json({ message: 'Invalid credentials' });
+    res.status(401).json({ message: 'Invalid credentials' });
     return;
   }
 

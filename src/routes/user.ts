@@ -1,5 +1,7 @@
 import express from "express";
 import { getUsers, loginUser, registerUser } from "../handlers/user";
+import { registerValidate } from "../validators/registerValidator";
+import { handleValidation } from "../middlewares/validation";
 
 const router = express.Router();
 
@@ -7,7 +9,7 @@ const router = express.Router();
 router.get('/', getUsers);
 
 // POST /users/new
-router.post('/new', registerUser);
+router.post('/new', registerValidate, handleValidation, registerUser);
 
 // POST /users/login
 router.post('/login', loginUser);
