@@ -1,5 +1,5 @@
 import { loginUser, registerUser } from "../handlers/user";
-import { mockReq, mockRes, mockNext } from "../__mocks__";
+import { mockReq, mockRes, mockNext } from "../__mocks__/user";
 import * as userService from '../services/user';
 
 jest.mock('../services/user');
