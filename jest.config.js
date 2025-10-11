@@ -10,5 +10,5 @@ module.exports = {
   },
   clearMocks: true,
   modulePathIgnorePatterns: ["<rootDir>/dist/"],
-  setupFiles: ["<rootDir>/jest.setup.ts"]
+  setupFiles: ["<rootDir>/src/jest.setup.ts"]
 };
