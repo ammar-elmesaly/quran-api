@@ -2,9 +2,10 @@ import jwt from 'jsonwebtoken';
 import { EnvironmentError } from '../types/errors';
 import { AuthRequestHandler } from '../types/requestHandlers';
 import { User } from '../types/models/user';
+import { findUser } from '../services/user';
 
 // Middleware to protect routes
-export const verifyToken: AuthRequestHandler = (req, res, next) => {
+export const verifyToken: AuthRequestHandler = async (req, res, next) => {
 
   if (!process.env.JWT_SECRET) throw new EnvironmentError("No JWT Secret Provided!");
   const JWT_SECRET = process.env.JWT_SECRET as string;
@@ -19,7 +20,14 @@ export const verifyToken: AuthRequestHandler = (req, res, next) => {
 
   try {
     const verified = jwt.verify(token, JWT_SECRET);
-    res.locals.user = verified as User;
+
+    const user = await findUser((verified as User).username);
+
+    if (!user) {
+      res.status(400).json({ message: "User is deleted" });
+      return;
+    }
+    res.locals.user = user;
     next();
   } catch (err) {
     res.status(400).json({ message: "Invalid Token" });

@@ -55,4 +55,13 @@ export const registerUser: RegisterRequestHandler = async (req, res) => {
   await userService.registerUser(user);
 
   res.status(201).json({ message: 'User registered successfully!' });
-};
+}
+
+export const deleteUser: RequestHandler = async (req, res) => {
+  const result = await userService.deleteUser(res.locals.user.id);
+  if (result.rowCount === 0) {
+    res.status(200).json({message: 'User does not exist.'});
+    return;
+  }
+  res.status(200).json({message: 'User deleted successfully.'});
+}

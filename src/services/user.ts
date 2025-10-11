@@ -25,6 +25,15 @@ export const registerUser = async (user: UserBody) => {
   );
 }
 
+export const deleteUser = async (userId: number) => {
+  const result = await pool.query(
+    'DELETE FROM "Users" WHERE id = $1',
+    [userId]
+  )
+
+  return result;
+}
+
 export const genToken = (username: string, id: number) => {
   if (!process.env.JWT_SECRET) throw new EnvironmentError("No JWT Secret Provided!");
 
