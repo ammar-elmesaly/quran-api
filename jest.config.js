@@ -8,5 +8,7 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
-  clearMocks: true
+  clearMocks: true,
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
+  setupFiles: ["<rootDir>/jest.setup.ts"]
 };
