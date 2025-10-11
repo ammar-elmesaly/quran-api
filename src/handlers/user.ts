@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import * as userService from '../services/user';
 import { UserBody } from "../types/body";
-import { verifyPassword } from "../services/hash";
+import { hashPassword, verifyPassword } from "../services/hash";
 import { User } from "../types/models/user";
 import { RegisterRequestHandler } from "../types/requestHandlers";
 
@@ -27,7 +27,7 @@ export const loginUser: RequestHandler = async (req, res) => {
     return;
   }
 
-  const token = userService.genToken(username, user.id);
+  const token = userService.genToken(username, user.id, user.token_version);
 
   res.cookie("token", token, {
     httpOnly: true,
@@ -56,6 +56,31 @@ export const registerUser: RegisterRequestHandler = async (req, res) => {
 
   res.status(201).json({ message: 'User registered successfully!' });
 }
+
+export const updateUser: RequestHandler = async (req, res) => {
+  const { new_username, new_password } = req.body;
+
+  let new_password_hash;
+  if (new_password)
+    new_password_hash = await hashPassword(new_password);
+
+  const result = await userService.updateUser(res.locals.user.id, new_username, new_password_hash);
+
+  if (!result) {
+    res.json({ message: "No updates specified" });
+    return;
+  }
+
+  const token = userService.genToken(result.username, result.id, result.token_version);
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict"
+  });
+
+  res.json({ message: "User updated successfully!" });
+};
 
 export const deleteUser: RequestHandler = async (req, res) => {
   const result = await userService.deleteUser(res.locals.user.id);

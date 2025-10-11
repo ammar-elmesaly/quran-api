@@ -3,4 +3,5 @@ export interface User {
   username: string;
   password_hash: string;
   created_at: string;
+  token_version: number;
 }

@@ -8,10 +8,11 @@ import { findUser } from '../services/user';
 export const verifyToken: AuthRequestHandler = async (req, res, next) => {
 
   if (!process.env.JWT_SECRET) throw new EnvironmentError("No JWT Secret Provided!");
-  const JWT_SECRET = process.env.JWT_SECRET as string;
+  
+  const JWT_SECRET = process.env.JWT_SECRET;
 
   // Get token from cookies
-  const token = req.cookies?.token;
+  const token = req.cookies.token;
 
   if (!token) {
     res.status(401).json({ message: "Access Denied" });
@@ -19,17 +20,19 @@ export const verifyToken: AuthRequestHandler = async (req, res, next) => {
   }
 
   try {
-    const verified = jwt.verify(token, JWT_SECRET);
+    const verified: User = jwt.verify(token, JWT_SECRET) as User;
 
-    const user = await findUser((verified as User).username);
+    const user = await findUser((verified).username);
 
-    if (!user) {
-      res.status(400).json({ message: "User is deleted" });
+    if (!user || user.token_version !== verified.token_version ) {
+      res.status(400).json({ message: "Invalid token" });  // Invalidating token after user deletion or password change
       return;
     }
+
     res.locals.user = user;
     next();
   } catch (err) {
+    console.log(err);
     res.status(400).json({ message: "Invalid Token" });
     return;
   }
