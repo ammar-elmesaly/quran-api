@@ -1,5 +1,5 @@
 import { UserBody } from "../types/body";
-import { hashPassword } from "../services/hash";
+import { hashPassword, verifyPassword } from "../services/hash";
 import jwt from 'jsonwebtoken';
 import { EnvironmentError } from "../types/errors";
 import pool from "./db";
@@ -25,19 +25,30 @@ export const registerUser = async (user: UserBody) => {
   );
 };
 
-export const updateUser = async (userId: number, newUsername?: string, newPasswordHash?: string) => {
+export const updateUser = async (
+  userId: number,
+  oldUsername: string,
+  oldPasswordHash: string,
+  newUsername?: string,
+  newPassword?: string
+) => {
   const fields: string[] = [];
   const values: any[] = [];
   let paramIndex = 1;
 
-  if (newUsername) {
+  if (newUsername && newUsername !== oldUsername) {
     fields.push(`username = $${paramIndex++}`);
     values.push(newUsername);
   }
 
-  if (newPasswordHash) {
-    fields.push(`password_hash = $${paramIndex++}`);
-    values.push(newPasswordHash);
+  if (newPassword) {
+    const isSamePassword = await verifyPassword(newPassword, oldPasswordHash);
+    if (!isSamePassword) {
+      fields.push(`password_hash = $${paramIndex++}`);
+
+      const newPasswordHash = await hashPassword(newPassword);
+      values.push(newPasswordHash);
+    }
   }
 
   if (fields.length === 0) {

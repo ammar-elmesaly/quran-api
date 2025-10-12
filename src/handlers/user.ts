@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import * as userService from '../services/user';
 import { UserBody } from "../types/body";
-import { hashPassword, verifyPassword } from "../services/hash";
+import { verifyPassword } from "../services/hash";
 import { User } from "../types/models/user";
 import { RegisterRequestHandler } from "../types/requestHandlers";
 
@@ -58,16 +58,13 @@ export const registerUser: RegisterRequestHandler = async (req, res) => {
 }
 
 export const updateUser: RequestHandler = async (req, res) => {
+  const { id, username, password_hash } = res.locals.user;
   const { new_username, new_password } = req.body;
 
-  let new_password_hash;
-  if (new_password)
-    new_password_hash = await hashPassword(new_password);
-
-  const result = await userService.updateUser(res.locals.user.id, new_username, new_password_hash);
+  const result = await userService.updateUser(id, username, password_hash, new_username, new_password);
 
   if (!result) {
-    res.json({ message: "No updates specified" });
+    res.status(200).json({ message: "No updates specified" });
     return;
   }
 
@@ -79,7 +76,7 @@ export const updateUser: RequestHandler = async (req, res) => {
     sameSite: "strict"
   });
 
-  res.json({ message: "User updated successfully!" });
+  res.status(200).json({ message: "User updated successfully!" });
 };
 
 export const deleteUser: RequestHandler = async (req, res) => {
