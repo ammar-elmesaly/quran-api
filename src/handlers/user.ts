@@ -43,15 +43,22 @@ export const loginUser: RequestHandler = async (req, res) => {
 }
 
 export const registerUser: RegisterRequestHandler = async (req, res) => {
+  try {
+    const user: UserBody = {
+      username: req.body.username,
+      password: req.body.password
+    };
 
-  const user: UserBody = {
-    username: req.body.username,
-    password: req.body.password
-  };
+    await userService.registerUser(user);
 
-  await userService.registerUser(user);
+    res.status(201).json({ message: 'User registered successfully!' });
 
-  res.status(201).json({ message: 'User registered successfully!' });
+  } catch (err) {
+    if ((err as Error).message.includes("Users_username_key"))
+      throw new AppError("Username already used", 400, "DUPLICATE_USERNAME");
+
+    throw err;
+  }
 }
 
 export const updateUser: RequestHandler = async (req, res) => {
