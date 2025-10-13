@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { EnvironmentError } from '../types/errors';
+import { AppError, EnvironmentError } from '../types/errors';
 import { AuthRequestHandler } from '../types/requestHandlers';
 import { User } from '../types/models/user';
 import { findUser } from '../services/user';
@@ -14,26 +14,24 @@ export const verifyToken: AuthRequestHandler = async (req, res, next) => {
   // Get token from cookies
   const token = req.cookies.token;
 
-  if (!token) {
-    res.status(401).json({ message: "Access Denied" });
-    return;
-  }
+  if (!token)
+    throw new AppError('Access denied', 401, 'INVALID_TOKEN');
 
   try {
     const verified: User = jwt.verify(token, JWT_SECRET) as User;
 
     const user = await findUser((verified).username);
 
-    if (!user || user.token_version !== verified.token_version ) {
-      res.status(400).json({ message: "Invalid token" });  // Invalidating token after user deletion or password change
-      return;
-    }
+    if (!user || user.token_version !== verified.token_version )
+      throw new AppError('Access denied', 401, 'TOKEN_INVALIDATED')  // Invalidating token after user deletion or password change
 
     res.locals.user = user;
     next();
+
   } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: "Invalid Token" });
-    return;
+    if (err instanceof AppError)
+      throw err;  
+    
+    throw new AppError('Access denied', 401, 'INVALID_TOKEN')
   }
 };

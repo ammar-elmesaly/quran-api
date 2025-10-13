@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
 import allRoutes from './routes';
+import { errorHandler } from './middlewares/errorHandler';
 
 export const app = express();
 
@@ -24,3 +25,4 @@ app.get('/', (req, res) => {
 });
 
 app.use(allRoutes);
+app.use(errorHandler);

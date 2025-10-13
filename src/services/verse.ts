@@ -1,3 +1,4 @@
+import { AppError } from "../types/errors";
 import pool from "./db";
 
 export const getVerse = (surahNumber: number, verseNumber: number) => {
@@ -5,8 +6,14 @@ export const getVerse = (surahNumber: number, verseNumber: number) => {
 }
 
 export const saveVerse = async (surahNumber: number, verseNumber: number, userId: number, note?: string) => {
-  const verse = await getVerse(surahNumber, verseNumber);
-  const verseJson = await verse.json();
+  const verseResponse = await getVerse(surahNumber, verseNumber);
+  
+  if (!verseResponse.ok) {
+    const errorBody = await verseResponse.json();
+    throw new AppError(errorBody?.message || 'Verse not found', 404, 'VERSE_NOT_FOUND');
+  }
+  
+  const verseJson = await verseResponse.json();
   
   if (note === '') note = undefined;
 
