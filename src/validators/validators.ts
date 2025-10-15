@@ -10,7 +10,7 @@ export const registerValidate = [
  and include at least one uppercase letter and one number.`)
 ];
 
-export const updateValidate = [
+export const updateUserValidate = [
   body('new_username')
   .optional()
   .matches(/^[a-z0-9_]{3,15}$/)
@@ -22,4 +22,18 @@ export const updateValidate = [
   .matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/)
   .withMessage(`Password must be at least 8 characters long\
  and include at least one uppercase letter and one number.`)
-]
+];
+
+export const updateVerseValidate = [
+  body('surah')
+  .isNumeric()
+  .withMessage(`Surah must be a number.`),
+
+  body('verse')
+  .isNumeric()
+  .withMessage(`Verse must be a number.`),
+
+  body('note')
+  .optional()
+  .isString()
+];

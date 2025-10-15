@@ -1,4 +1,5 @@
 import { AppError } from "../types/errors";
+import { VerseJson } from "../types/quran";
 import pool from "./db";
 
 export const getVerse = (surahNumber: number, verseNumber: number) => {
@@ -30,6 +31,33 @@ export const getSaved = async (userId: number) => {
   );
 
   return saved.rows;
+}
+
+export const updateSaved = async (verseId: number, userId: number, surahNumber: number, verseNumber: number, note?: string) => {
+  const verseResponse = await getVerse(surahNumber, verseNumber);
+
+  if (!verseResponse.ok) {
+    const errorBody = await verseResponse.json();
+    throw new AppError(errorBody?.message || 'Verse not found', 404, 'VERSE_NOT_FOUND');
+  }
+  
+  const verseToSave: VerseJson = await verseResponse.json();
+
+  const { sura_name, text } = verseToSave;
+  
+  const result = await pool.query(`
+    UPDATE "SaveVerse"
+    SET
+      surah_index = $1,
+      surah_name = $2,
+      verse_number = $3,
+      text = $4,
+      note = COALESCE($5, note)
+    WHERE id = $6 AND user_id = $7
+    RETURNING *;
+  `, [surahNumber, sura_name, verseNumber, text, note, verseId, userId]);
+
+  return result.rows[0];
 }
 
 export const deleteSaved = async (verseId: number, userId: number) => {

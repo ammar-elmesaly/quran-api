@@ -34,7 +34,19 @@ export const getSaved: AuthRequestHandler = async (req, res) => {
   res.status(200).json(saved);
 }
 
+export const updateSaved: AuthRequestHandler = async (req, res) => {
+  const { surah, verse, note } = req.body;
+  // TODO verify req.params before sending
+  const result = await verseService.updateSaved(req.params.verse_id, res.locals.user!.id, surah, verse, note);
+
+  if (!result)
+    throw new AppError('Saved verse not found', 404, 'SAVED_VERSE_NOT_FOUND');
+  
+  res.status(200).json({ message: 'Verse update successfully!' });
+}
+
 export const deleteSaved: AuthRequestHandler = async (req, res) => {
+  // TODO verify req.params before sending
   const result = await verseService.deleteSaved(req.params.verse_id, res.locals.user!.id);
 
   if (result.rowCount === 0)

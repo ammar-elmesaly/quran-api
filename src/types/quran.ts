@@ -1,9 +1,6 @@
 export interface VerseJson {
-  data: {
-    text: string,
-    surah: {
-      name: string;
-      englishName: string;
-    }
-  }
+  sura_index: number,
+  sura_name: string,
+  ayah_number: number,
+  text: string
 }
