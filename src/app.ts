@@ -4,11 +4,16 @@ import cookieParser from 'cookie-parser';
 
 import allRoutes from './routes';
 import { errorHandler } from './middlewares/errorHandler';
+import helmet from 'helmet';
 
 export const app = express();
 
+app.disable('x-powered-by');
+
 app.use(bodyParser.json());
+app.use(helmet());
 app.use(cookieParser());
+
 
 app.get('/', (req, res) => {
   res.json({

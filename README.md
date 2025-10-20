@@ -80,6 +80,7 @@ Example for storing the token in a cookie txt file:
 ```bash
 curl -X POST http://localhost:3000/users/login -H "Content-Type: application/json" -d '{"username": "bob", "password": "password123"}' -c cookie.txt
 ```
+
 The token is automatically set as an **HTTP-only** cookie in the response.
 
 For subsequent requests to protected routes, include the cookie in your request. For example:

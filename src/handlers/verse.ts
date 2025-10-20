@@ -36,7 +36,6 @@ export const getSaved: AuthRequestHandler = async (req, res) => {
 
 export const updateSaved: AuthRequestHandler = async (req, res) => {
   const { surah, verse, note } = req.body;
-  // TODO verify req.params before sending
   const result = await verseService.updateSaved(req.params.verse_id, res.locals.user!.id, surah, verse, note);
 
   if (!result)
@@ -46,7 +45,6 @@ export const updateSaved: AuthRequestHandler = async (req, res) => {
 }
 
 export const deleteSaved: AuthRequestHandler = async (req, res) => {
-  // TODO verify req.params before sending
   const result = await verseService.deleteSaved(req.params.verse_id, res.locals.user!.id);
 
   if (result.rowCount === 0)

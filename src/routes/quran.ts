@@ -5,7 +5,7 @@ import { getVerseTafsir, getAllTafsirs } from "../handlers/tafsir";
 import { validateVerseParams } from "../middlewares/verse";
 import { validateTafsirParams } from "../middlewares/tafsir";
 import { verifyToken } from "../middlewares/auth";
-import { updateVerseValidate } from "../validators/validators";
+import { deleteVerseValidate, updateVerseValidate } from "../validators/validators";
 import { handleValidation } from "../middlewares/validation";
 
 const router = express.Router();
@@ -29,6 +29,6 @@ router.get('/saved', verifyToken, getSaved);
 router.put('/:verse_id/update', verifyToken, updateVerseValidate, handleValidation, updateSaved);
 
 // DELETE /quran/:verse_id/delete
-router.delete('/:verse_id/delete', verifyToken, deleteSaved);
+router.delete('/:verse_id/delete', verifyToken, deleteVerseValidate, handleValidation, deleteSaved);
 
 export default router;
