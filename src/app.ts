@@ -5,6 +5,9 @@ import cookieParser from 'cookie-parser';
 import allRoutes from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import helmet from 'helmet';
+import morgan from 'morgan';
+import path from 'path';
+import fs from 'fs';
 
 export const app = express();
 
@@ -14,6 +17,15 @@ app.use(bodyParser.json());
 app.use(helmet());
 app.use(cookieParser());
 
+const logDir = path.join(__dirname, 'logs');
+
+if (!fs.existsSync(logDir)){
+  fs.mkdirSync(logDir);
+}
+
+const accessLogStream = fs.createWriteStream(path.join(logDir, "access.log"), { flags: 'a' });
+
+app.use(morgan('combined', {stream: accessLogStream}));
 
 app.get('/', (req, res) => {
   res.json({
