@@ -1,5 +1,5 @@
 import express from "express";
-import { getUsers, loginUser, registerUser, deleteUser, updateUser } from "../handlers/user";
+import { getUsers, loginUser, registerUser, deleteUser, updateUser, ipLoginLimiter, userLoginLimiter, ipRegisterLimiter } from "../handlers/user";
 import { registerValidate, updateUserValidate } from "../validators/validators";
 import { handleValidation } from "../middlewares/validation";
 import { verifyToken } from "../middlewares/auth";
@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/', getUsers);
 
 // POST /users/new
-router.post('/new', registerValidate, handleValidation, registerUser);
+router.post('/new', ipRegisterLimiter, registerValidate, handleValidation, registerUser);
 
 // PUT /users/update
 router.put('/update', verifyToken, updateUserValidate, handleValidation, updateUser);
@@ -19,6 +19,6 @@ router.put('/update', verifyToken, updateUserValidate, handleValidation, updateU
 router.delete('/delete', verifyToken, deleteUser);
 
 // POST /users/login
-router.post('/login', loginUser);
+router.post('/login', ipLoginLimiter, userLoginLimiter, loginUser);
 
 export default router;

@@ -5,6 +5,7 @@ import { verifyPassword } from "../services/hash";
 import { User } from "../types/models/user";
 import { RegisterRequestHandler } from "../types/requestHandlers";
 import { AppError } from "../types/errors";
+import rateLimit from "express-rate-limit";
 
 export const getUsers: RequestHandler = async (req, res) => {
   const users = await userService.getUsers();
@@ -89,3 +90,25 @@ export const deleteUser: RequestHandler = async (req, res) => {
 
   res.status(200).json({message: 'User deleted successfully.'});
 }
+
+export const ipLoginLimiter = rateLimit({  // Rate limiting by IP
+  windowMs: 5 * 60 * 100,  // 5 minutes
+  limit: 5,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});
+
+export const userLoginLimiter = rateLimit({  // Rate limiting by username
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 5,
+  keyGenerator: (req) => req.body.username,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});
+
+export const ipRegisterLimiter = rateLimit({
+  windowMs: 15 * 60 * 100,  // 5 minute
+  limit: 1,  // 1 Account per 5 minutes
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});

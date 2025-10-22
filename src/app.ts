@@ -28,7 +28,7 @@ const accessLogStream = createStream('access.log', { interval: '1d',  path: logD
 app.use(morgan('combined', { stream: accessLogStream }));
 
 const limiter = rateLimit({
-  windowMs: 8 * 60 * 1000,  // 8 minutes
+  windowMs: 1 * 60 * 1000,  // 1 minute
   limit: 100,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
