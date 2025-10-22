@@ -8,6 +8,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 import fs from 'fs';
+import  { createStream } from 'rotating-file-stream';
+import rateLimit from 'express-rate-limit';
 
 export const app = express();
 
@@ -19,13 +21,20 @@ app.use(cookieParser());
 
 const logDir = path.join(__dirname, 'logs');
 
-if (!fs.existsSync(logDir)){
+if (!fs.existsSync(logDir))
   fs.mkdirSync(logDir);
-}
 
-const accessLogStream = fs.createWriteStream(path.join(logDir, "access.log"), { flags: 'a' });
+const accessLogStream = createStream('access.log', { interval: '1d',  path: logDir });
+app.use(morgan('combined', { stream: accessLogStream }));
 
-app.use(morgan('combined', {stream: accessLogStream}));
+const limiter = rateLimit({
+  windowMs: 8 * 60 * 1000,  // 8 minutes
+  limit: 100,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});
+
+app.use(limiter);
 
 app.get('/', (req, res) => {
   res.json({
