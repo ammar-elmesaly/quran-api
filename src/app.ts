@@ -5,10 +5,6 @@ import cookieParser from 'cookie-parser';
 import allRoutes from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import helmet from 'helmet';
-import morgan from 'morgan';
-import path from 'path';
-import fs from 'fs';
-import  { createStream } from 'rotating-file-stream';
 import rateLimit from 'express-rate-limit';
 
 export const app = express();
@@ -18,14 +14,6 @@ app.disable('x-powered-by');
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(cookieParser());
-
-const logDir = path.join(__dirname, 'logs');
-
-if (!fs.existsSync(logDir))
-  fs.mkdirSync(logDir);
-
-const accessLogStream = createStream('access.log', { interval: '1d',  path: logDir });
-app.use(morgan('combined', { stream: accessLogStream }));
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,  // 1 minute
