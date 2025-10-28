@@ -2,8 +2,6 @@
 
 Quran-API is a simple and powerful RESTful API that provides structured access to the Quran. It allows developers to retrieve verses, tafsirs, translations, and manage user-saved verses — ideal for building Islamic apps, educational platforms, or research tools.
 
---
-
 ## 🌐 Live Demo
 
 Check out the live site here: [quran-api](https://quran-api-azure-eight.vercel.app/)
