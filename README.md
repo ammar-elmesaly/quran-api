@@ -2,6 +2,12 @@
 
 Quran-API is a simple and powerful RESTful API that provides structured access to the Quran. It allows developers to retrieve verses, tafsirs, translations, and manage user-saved verses — ideal for building Islamic apps, educational platforms, or research tools.
 
+--
+
+## 🌐 Live Demo
+
+Check out the live site here: [quran-api](https://quran-api-azure-eight.vercel.app/)
+
 ---
 
 ## 🚀 Features
@@ -56,6 +62,7 @@ By default, the API runs on **[http://localhost:3000](http://localhost:3000)**.
 | GET    | `/quran/tafsir`                       | List all available tafsir sources         |
 | POST   | `/quran/:surah/:verse/save`           | Save a verse to authenticated user’s list |
 | GET    | `/quran/saved`                        | Retrieve saved verses for the user        |
+| PUT    | `/quran/:verse_id/update`             | Update verse like changing note or choosing a different verse  |
 | DELETE | `/quran/:verse_id/delete`             | Delete a saved verse                      |
 
 ---
@@ -64,9 +71,10 @@ By default, the API runs on **[http://localhost:3000](http://localhost:3000)**.
 
 | Method | Endpoint        | Description                  |
 | ------ | --------------- | ---------------------------- |
-| GET    | `/users`        | List all users *(admin use)* |
 | POST   | `/users/new`    | Register a new user          |
 | POST   | `/users/login`  | Login and get an auth token  |
+| PUT    | `/users/update` | Update user information (username / password) |
+| DELETE | `/users/delete` | Delete user from database |
 
 ---
 
@@ -108,7 +116,8 @@ curl -X POST http://localhost:3000/quran/20/43/save\?note=test -H "Content-Type:
 
 You can customize port and settings using environment variables:
 
-```
+```text
+NODE_ENV=prod
 PORT=3000
 JWT_SECRET=your_secret_key
 DATABASE_URL=postgresql_database_url

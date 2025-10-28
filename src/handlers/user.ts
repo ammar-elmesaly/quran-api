@@ -7,11 +7,6 @@ import { RegisterRequestHandler } from "../types/requestHandlers";
 import { AppError } from "../types/errors";
 import rateLimit from "express-rate-limit";
 
-export const getUsers: RequestHandler = async (req, res) => {
-  const users = await userService.getUsers();
-  res.status(200).json(users);
-}
-
 export const loginUser: RequestHandler = async (req, res) => {
   const { username, password } = req.body;
 

@@ -1,13 +1,10 @@
 import express from "express";
-import { getUsers, loginUser, registerUser, deleteUser, updateUser, ipLoginLimiter, userLoginLimiter, ipRegisterLimiter } from "../handlers/user";
+import { loginUser, registerUser, deleteUser, updateUser, ipLoginLimiter, userLoginLimiter, ipRegisterLimiter } from "../handlers/user";
 import { registerValidate, updateUserValidate } from "../validators/validators";
 import { handleValidation } from "../middlewares/validation";
 import { verifyToken } from "../middlewares/auth";
 
 const router = express.Router();
-
-// GET /users
-router.get('/', getUsers);
 
 // POST /users/new
 router.post('/new', ipRegisterLimiter, registerValidate, handleValidation, registerUser);

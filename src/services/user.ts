@@ -4,11 +4,6 @@ import jwt from 'jsonwebtoken';
 import { EnvironmentError } from "../types/errors";
 import pool from "./db";
 
-export const getUsers = async () => {
-  const result = await pool.query('SELECT username, created_at FROM "Users"');
-  return result.rows ?? null;
-};
-
 export const findUser = async (username: string) => {
   const result = await pool.query('SELECT * FROM "Users" WHERE username=$1', [username]);
   return result.rows[0] ?? null;
