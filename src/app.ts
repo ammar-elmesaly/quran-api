@@ -10,6 +10,7 @@ import rateLimit from 'express-rate-limit';
 export const app = express();
 
 app.disable('x-powered-by');
+app.set('trust proxy', true);
 
 app.use(bodyParser.json());
 app.use(helmet());
